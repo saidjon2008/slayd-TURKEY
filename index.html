@@ -3,13 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#0a0e13" />
     <title>튀르키예 여행 경험</title>
-
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@400;500;700&family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;600;700&display=swap"
       rel="stylesheet"
     />
 
@@ -17,121 +13,518 @@
       :root {
         --bg: #0a0e13;
         --ink: #f3ede1;
-        --soft: rgba(243, 237, 225, 0.76);
         --gold: #d9b26f;
-        --gold-soft: rgba(217, 178, 111, 0.38);
-        --clay: #c8694a;
+        --soft: rgba(243, 237, 225, 0.75);
         --ease: cubic-bezier(0.77, 0, 0.18, 1);
-        --out: cubic-bezier(0.16, 0.8, 0.2, 1);
       }
-
       * {
         box-sizing: border-box;
         margin: 0;
         padding: 0;
       }
-
-      html,
       body {
-        width: 100%;
-        height: 100%;
-      }
-
-      body {
-        overflow: hidden;
         background: var(--bg);
         color: var(--ink);
-        font-family: "DM Sans", "Noto Sans KR", sans-serif;
-        -webkit-font-smoothing: antialiased;
+        font-family: "Noto Sans KR", sans-serif;
+        overflow: hidden;
       }
-
       button {
-        color: inherit;
         font: inherit;
+        color: inherit;
         cursor: pointer;
       }
-
       .grain,
       .vignette {
         position: fixed;
         inset: 0;
         pointer-events: none;
-        z-index: 60;
+        z-index: 50;
       }
-
       .grain {
-        opacity: 0.065;
+        opacity: 0.06;
         background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.6'/%3E%3C/svg%3E");
-        animation: grain 0.4s steps(3) infinite;
       }
-
-      @keyframes grain {
-        0% {
-          transform: translate(0, 0);
-        }
-        33% {
-          transform: translate(-1%, 1%);
-        }
-        66% {
-          transform: translate(1%, -1%);
-        }
-        100% {
-          transform: translate(0, 0);
-        }
-      }
-
       .vignette {
-        background: radial-gradient(
-          ellipse at center,
-          transparent 45%,
-          rgba(0, 0, 0, 0.48)
-        );
+        background: radial-gradient(ellipse, transparent 35%, #0008);
       }
-
       #dust {
         position: fixed;
         inset: 0;
         pointer-events: none;
         z-index: 8;
       }
-
-      .cursor,
-      .cdot {
+      .header {
         position: fixed;
+        z-index: 30;
         top: 0;
         left: 0;
-        z-index: 80;
+        right: 0;
+        height: 76px;
+        padding: 0 4.5%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: linear-gradient(#080b0f99, transparent);
+      }
+      .brand {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 4px;
+      }
+      .brand span,
+      .counter em {
+        color: var(--gold);
+      }
+      .h-right {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        font-size: 11px;
+        letter-spacing: 2px;
+      }
+      .tbtn {
+        border: 0;
+        background: transparent;
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        font-size: 10px;
+        letter-spacing: 2px;
+      }
+      .tbtn.on {
+        color: var(--gold);
+      }
+      .timeline {
+        position: fixed;
+        z-index: 30;
+        left: 2%;
+        top: 50%;
+        transform: translateY(-50%);
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .tl {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        border: 0;
+        background: transparent;
+        color: var(--soft);
+        padding: 7px 0;
+        font-size: 9px;
+        letter-spacing: 2px;
+        text-align: left;
+      }
+      .tl i {
+        width: 14px;
+        height: 1px;
+        background: currentColor;
+        transition: width 0.35s;
+      }
+      .tl span {
+        opacity: 0;
+        transform: translateX(-5px);
+        transition: 0.3s;
+        white-space: nowrap;
+      }
+      .tl:hover span,
+      .tl.active span {
+        opacity: 1;
+        transform: none;
+      }
+      .tl.active {
+        color: var(--gold);
+      }
+      .tl.active i {
+        width: 32px;
+      }
+      #stage {
+        position: fixed;
+        inset: 0;
+      }
+      .slide {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+        visibility: hidden;
+        clip-path: var(--from, inset(100% 0 0 0));
+        transition: clip-path 1.1s var(--ease);
+        background: var(--bg);
+      }
+      .slide.active,
+      .slide.under {
+        visibility: visible;
+      }
+      .slide.active {
+        clip-path: inset(0);
+        z-index: 3;
+      }
+      .slide.under {
+        clip-path: inset(0);
+        z-index: 2;
+      }
+      .bg {
+        position: absolute;
+        inset: -2%;
+        transform: translate3d(
+          calc(var(--mx, 0) * -10px),
+          calc(var(--my, 0) * -7px),
+          0
+        );
+        transition: transform 0.6s;
+      }
+      .bg img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        transform: scale(1.13);
+        transition: transform 9s ease;
+      }
+      .slide.active .bg img {
+        transform: scale(1.02);
+      }
+      .bg:after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+          linear-gradient(90deg, #080b0fdf, #080b0f88 48%, #080b0f20),
+          linear-gradient(0deg, #080b0f9c, transparent 50%);
+      }
+      .glow {
+        position: absolute;
+        inset: 0;
         pointer-events: none;
-        border-radius: 50%;
+        background: radial-gradient(
+          circle at 78% 40%,
+          var(--tint),
+          transparent 55%
+        );
+        opacity: 0.17;
+        mix-blend-mode: screen;
       }
-
-      .cursor {
+      .wrap {
+        position: absolute;
+        z-index: 4;
+        inset: 0;
+        display: grid;
+        grid-template-columns: 0.9fr 1.1fr;
+        align-items: center;
+        gap: 5%;
+        padding: 90px 7% 85px 9%;
+      }
+      .hero .wrap {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: center;
+        padding: 190px 9% 70px;
+      }
+      .id-top {
+        position: absolute;
+        z-index: 5;
+        top: 95px;
+        right: 8%;
+        text-align: right;
+        max-width: 80%;
+      }
+      .major {
+        font:
+          600 clamp(17px, 2vw, 28px) "Noto Serif KR",
+          serif;
+        color: var(--gold);
+        text-shadow: 0 2px 18px #000;
+      }
+      .nm {
+        margin-top: 9px;
+        font:
+          400 clamp(16px, 1.6vw, 23px) "Noto Serif KR",
+          serif;
+        text-shadow: 0 2px 18px #000;
+      }
+      .eyebrow {
+        display: flex;
+        align-items: center;
+        gap: 13px;
+        margin-bottom: 20px;
+        color: var(--gold);
+        font-size: 10px;
+        letter-spacing: 4px;
+      }
+      .eyebrow:before {
+        content: "";
         width: 34px;
-        height: 34px;
-        margin: -17px 0 0 -17px;
-        border: 1px solid var(--gold);
-        mix-blend-mode: difference;
+        height: 1px;
+        background: currentColor;
+      }
+      .title {
+        font:
+          600 clamp(34px, 4.6vw, 70px)/1.3 "Noto Serif KR",
+          serif;
+        letter-spacing: -1px;
+        word-break: keep-all;
+        background: linear-gradient(100deg, #fff 40%, #f3d9a0);
+        color: transparent;
+        background-clip: text;
+        -webkit-background-clip: text;
+      }
+      .hero .title {
+        font-size: clamp(43px, 6.5vw, 92px);
+        max-width: 900px;
+      }
+      .ln {
+        display: block;
+        overflow: hidden;
+        padding: 0.05em 0.08em 0.12em 0;
+      }
+      .ch {
+        display: inline-block;
+        opacity: 0;
+        transform: translateY(110%) rotate(4deg);
         transition:
-          width 0.25s,
-          height 0.25s,
-          margin 0.25s,
-          background 0.25s;
+          transform 0.85s cubic-bezier(0.16, 0.8, 0.2, 1),
+          opacity 0.7s;
+        transition-delay: calc(var(--i) * 18ms + 200ms);
       }
-
-      .cursor.big {
-        width: 58px;
-        height: 58px;
-        margin: -29px 0 0 -29px;
-        background: rgba(217, 178, 111, 0.15);
+      .slide.active .ch {
+        opacity: 1;
+        transform: none;
       }
-
-      .cdot {
-        width: 5px;
-        height: 5px;
-        margin: -2.5px;
+      .pts {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 11px;
+        margin-top: 25px;
+        max-width: 700px;
+      }
+      .pts li {
+        padding: 13px 17px;
+        border: 1px solid #d9b26f55;
+        border-radius: 12px;
+        background: #0a0e1375;
+        backdrop-filter: blur(8px);
+        font:
+          500 clamp(14px, 1.35vw, 20px)/1.65 "Noto Serif KR",
+          serif;
+        word-break: keep-all;
+        opacity: 0;
+        transform: translateY(16px);
+        transition:
+          opacity 0.65s,
+          transform 0.65s,
+          border-color 0.3s;
+      }
+      .slide.active .pts li {
+        opacity: 1;
+        transform: none;
+      }
+      .pts li:nth-child(1) {
+        transition-delay: 0.4s;
+      }
+      .pts li:nth-child(2) {
+        transition-delay: 0.6s;
+      }
+      .pts li:nth-child(3) {
+        transition-delay: 0.8s;
+      }
+      .pts li:before {
+        content: "";
+        display: inline-block;
+        width: 7px;
+        height: 7px;
+        margin: 0 12px 2px 0;
+        border-radius: 50%;
         background: var(--gold);
       }
-
+      .arch-wrap {
+        position: relative;
+        width: 100%;
+        max-width: 790px;
+        justify-self: center;
+        opacity: 0;
+        transform: translateY(25px);
+        transition:
+          opacity 1s 0.3s,
+          transform 1s cubic-bezier(0.16, 0.8, 0.2, 1) 0.3s;
+      }
+      .slide.active .arch-wrap {
+        opacity: 1;
+        transform: none;
+      }
+      .arch-wrap:before {
+        content: "";
+        position: absolute;
+        inset: -15px;
+        border: 1px solid #d9b26f66;
+        border-radius: 220px 220px 22px 22px;
+      }
+      .arch {
+        height: min(76vh, 750px);
+        overflow: hidden;
+        border-radius: 210px 210px 20px 20px;
+        box-shadow: 0 35px 100px #0009;
+        background: #182028;
+      }
+      .arch img {
+        width: 100%;
+        height: 100%;
+        display: block;
+        object-fit: cover;
+        transform: scale(1.12);
+        transition: transform 9s ease;
+      }
+      .slide.active .arch img {
+        transform: scale(1);
+      }
+      .flip .wrap {
+        grid-template-columns: 1.1fr 0.9fr;
+      }
+      .flip .arch-wrap {
+        order: -1;
+      }
+      .closing .wrap {
+        grid-template-columns: 0.8fr 1.2fr;
+      }
+      .mapbox {
+        padding: 18px;
+        border: 1px solid #d9b26f55;
+        background: #0a101699;
+        backdrop-filter: blur(8px);
+      }
+      .mapbox svg {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+      .outline {
+        stroke-dasharray: 1800;
+        stroke-dashoffset: 1800;
+        transition: stroke-dashoffset 3s;
+      }
+      .slide.active .outline {
+        stroke-dashoffset: 0;
+      }
+      .route {
+        fill: none;
+        stroke: #c8694a;
+        stroke-width: 2;
+        stroke-dasharray: 500;
+        stroke-dashoffset: 500;
+        transition: stroke-dashoffset 3s 1s;
+      }
+      .slide.active .route {
+        stroke-dashoffset: 0;
+      }
+      .pin {
+        opacity: 0;
+        transition: opacity 0.7s 0.8s;
+      }
+      .slide.active .pin {
+        opacity: 1;
+      }
+      .pin .c {
+        fill: var(--bg);
+        stroke: var(--gold);
+        stroke-width: 2;
+      }
+      .pin .p {
+        fill: none;
+        stroke: var(--gold);
+        animation: pulse 2s infinite;
+      }
+      .pin text {
+        fill: var(--ink);
+        font-size: 10px;
+        letter-spacing: 1px;
+        font-weight: 700;
+      }
+      .pin text.k {
+        fill: var(--gold);
+        font-size: 11px;
+        font-weight: 400;
+      }
+      @keyframes pulse {
+        from {
+          r: 5;
+          opacity: 0.8;
+        }
+        to {
+          r: 19;
+          opacity: 0;
+        }
+      }
+      .restart {
+        margin-top: 23px;
+        padding: 12px 22px;
+        border: 1px solid var(--gold);
+        border-radius: 30px;
+        background: transparent;
+        color: var(--gold);
+        font-size: 12px;
+        letter-spacing: 2px;
+        transition: 0.3s;
+      }
+      .restart:hover {
+        background: var(--gold);
+        color: #111;
+      }
+      .footer {
+        position: fixed;
+        z-index: 30;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 72px;
+        padding: 0 4.5%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: linear-gradient(0deg, #080b0f88, transparent);
+      }
+      .hint {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: var(--soft);
+        font-size: 10px;
+        letter-spacing: 2px;
+      }
+      .hint:before {
+        content: "";
+        width: 35px;
+        height: 1px;
+        background: var(--gold);
+      }
+      .ctrl {
+        display: flex;
+        gap: 9px;
+      }
+      .cbtn {
+        width: 42px;
+        height: 42px;
+        border: 1px solid #f3ede177;
+        border-radius: 50%;
+        background: transparent;
+        transition: 0.3s;
+      }
+      .cbtn:hover {
+        color: #111;
+        background: var(--gold);
+        border-color: var(--gold);
+      }
+      .pbar {
+        position: fixed;
+        z-index: 35;
+        bottom: 0;
+        left: 0;
+        height: 2px;
+        width: 0;
+        background: var(--gold);
+        transition: width 0.8s;
+      }
       .loader {
         position: fixed;
         inset: 0;
@@ -147,32 +540,27 @@
           visibility 1s;
         clip-path: inset(0);
       }
-
       .loader.hide {
         clip-path: inset(0 0 100% 0);
         visibility: hidden;
       }
-
       .loader b {
         font:
           italic 400 clamp(55px, 10vw, 120px) "Cormorant Garamond",
           serif;
         color: var(--gold);
       }
-
       .loader small {
         font-size: 11px;
         letter-spacing: 4px;
         color: var(--soft);
       }
-
       .lb {
         width: 190px;
         height: 2px;
         overflow: hidden;
         background: #303039;
       }
-
       .lb i {
         display: block;
         width: 100%;
@@ -180,804 +568,93 @@
         background: var(--gold);
         transform: scaleX(0);
         transform-origin: left;
-        transition: transform 0.2s;
       }
-
-      .header {
-        position: fixed;
-        z-index: 30;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 76px;
-        padding: 0 4.5%;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        background: linear-gradient(#080b0f99, transparent);
-      }
-
-      .brand {
-        font-size: 11px;
-        font-weight: 700;
-        letter-spacing: 4px;
-      }
-
-      .brand span,
-      .counter em {
-        color: var(--gold);
-      }
-
-      .h-right {
-        display: flex;
-        align-items: center;
-        gap: 24px;
-        font-size: 11px;
-        letter-spacing: 2px;
-      }
-
-      .tbtn {
-        border: 0;
-        background: transparent;
-        display: flex;
-        align-items: center;
-        gap: 9px;
-        opacity: 0.8;
-        font-size: 10px;
-        letter-spacing: 2px;
-      }
-
-      .tbtn.on {
-        color: var(--gold);
-        opacity: 1;
-      }
-
-      .bars {
-        display: flex;
-        align-items: flex-end;
-        gap: 3px;
-        height: 14px;
-      }
-
-      .bars i {
-        width: 2px;
-        height: 4px;
-        background: var(--gold);
-      }
-
-      .tbtn.on .bars i {
-        animation: equalize 0.8s ease infinite alternate;
-      }
-
-      .bars i:nth-child(2) {
-        animation-delay: 0.15s;
-      }
-      .bars i:nth-child(3) {
-        animation-delay: 0.3s;
-      }
-      .bars i:nth-child(4) {
-        animation-delay: 0.1s;
-      }
-
-      @keyframes equalize {
-        to {
-          height: 14px;
-        }
-      }
-
-      .timeline {
-        position: fixed;
-        z-index: 30;
-        left: 2%;
-        top: 50%;
-        transform: translateY(-50%);
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-      }
-
-      .tl {
-        display: flex;
-        align-items: center;
-        gap: 11px;
-        border: 0;
-        background: transparent;
-        color: var(--soft);
-        padding: 7px 0;
-        font-size: 9px;
-        letter-spacing: 2px;
-        text-align: left;
-      }
-
-      .tl i {
-        width: 14px;
-        height: 1px;
-        background: currentColor;
-        transition: width 0.35s;
-      }
-
-      .tl span {
-        opacity: 0;
-        transform: translateX(-5px);
-        transition: 0.3s;
-        white-space: nowrap;
-      }
-
-      .tl:hover span,
-      .tl.active span {
-        opacity: 1;
-        transform: none;
-      }
-
-      .tl.active {
-        color: var(--gold);
-      }
-
-      .tl.active i {
-        width: 32px;
-      }
-
-      #stage {
-        position: fixed;
-        inset: 0;
-      }
-
-      .slide {
-        position: absolute;
-        inset: 0;
-        overflow: hidden;
-        visibility: hidden;
-        clip-path: var(--from, inset(100% 0 0 0));
-        transition: clip-path 1.1s var(--ease);
-        background: var(--bg);
-      }
-
-      .slide.active,
-      .slide.enter,
-      .slide.under {
-        visibility: visible;
-      }
-
-      .slide.active {
-        clip-path: inset(0);
-        z-index: 3;
-      }
-
-      .slide.under {
-        clip-path: inset(0);
-        z-index: 2;
-      }
-
-      .bg {
-        position: absolute;
-        inset: -2%;
-        transform: translate3d(
-          calc(var(--mx, 0) * -10px),
-          calc(var(--my, 0) * -7px),
-          0
-        );
-        transition: transform 0.6s ease-out;
-      }
-
-      .bg img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        display: block;
-        transform: scale(1.14);
-        transition: transform 10s cubic-bezier(0.2, 0.6, 0.3, 1);
-      }
-
-      .slide.active .bg img {
-        transform: scale(1.02);
-      }
-
-      .bg::after {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background:
-          linear-gradient(
-            90deg,
-            rgba(8, 11, 15, 0.88),
-            rgba(8, 11, 15, 0.48) 45%,
-            rgba(8, 11, 15, 0.12)
-          ),
-          linear-gradient(0deg, rgba(8, 11, 15, 0.64), transparent 48%);
-      }
-
-      .glow {
-        position: absolute;
-        inset: 0;
-        pointer-events: none;
-        background: radial-gradient(
-          circle at 75% 42%,
-          var(--tint),
-          transparent 55%
-        );
-        opacity: 0.18;
-        mix-blend-mode: screen;
-      }
-
-      .wrap {
-        position: absolute;
-        z-index: 4;
-        inset: 0;
-        display: grid;
-        grid-template-columns: 0.9fr 1.1fr;
-        align-items: center;
-        gap: 5%;
-        padding: 90px 7% 85px 9%;
-      }
-
-      .hero .wrap {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        justify-content: center;
-        padding: 210px 9% 70px;
-      }
-
-      .id-top {
-        position: absolute;
-        z-index: 5;
-        top: 100px;
-        right: 8%;
-        text-align: right;
-        max-width: 70%;
-      }
-
-      .id-top .major {
-        display: flex;
-        justify-content: flex-end;
-        align-items: center;
-        gap: 13px;
-        font:
-          600 clamp(17px, 2vw, 29px) "Noto Serif KR",
-          serif;
-        color: var(--gold);
-        text-shadow: 0 2px 18px #000;
-      }
-
-      .id-top .major::after {
-        content: "";
-        width: 35px;
-        height: 1px;
-        background: var(--gold);
-      }
-
-      .id-top .nm {
-        margin-top: 9px;
-        font:
-          400 clamp(16px, 1.7vw, 24px) "Noto Serif KR",
-          serif;
-        text-shadow: 0 2px 18px #000;
-      }
-
-      .eyebrow {
-        display: flex;
-        align-items: center;
-        gap: 13px;
-        margin-bottom: 22px;
-        color: var(--gold);
-        font-size: 10px;
-        letter-spacing: 4px;
-      }
-
-      .eyebrow::before {
-        content: "";
-        width: 35px;
-        height: 1px;
-        background: currentColor;
-      }
-
-      .title {
-        font:
-          600 clamp(36px, 5vw, 75px)/1.25 "Noto Serif KR",
-          serif;
-        letter-spacing: -1.5px;
-        background: linear-gradient(100deg, #fff 40%, #f3d9a0);
-        color: transparent;
-        background-clip: text;
-        -webkit-background-clip: text;
-        text-shadow: 0 4px 35px #0003;
-        word-break: keep-all;
-      }
-
-      .hero .title {
-        font-size: clamp(43px, 6.6vw, 96px);
-        max-width: 850px;
-        line-height: 1.25;
-      }
-
-      .ln {
-        display: block;
-        overflow: hidden;
-        padding: 0.05em 0.08em 0.12em 0;
-      }
-
-      .w {
-        display: inline-block;
-      }
-
-      .ch {
-        display: inline-block;
-        opacity: 0;
-        transform: translateY(110%) rotate(5deg);
-        transition:
-          transform 0.9s var(--out),
-          opacity 0.7s ease;
-        transition-delay: calc(var(--i) * 18ms + 250ms);
-      }
-
-      .slide.active .ch {
-        opacity: 1;
-        transform: none;
-      }
-
-      .pts {
-        list-style: none;
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-        margin-top: 26px;
-        max-width: 690px;
-      }
-
-      .pts li {
-        position: relative;
-        padding: 13px 18px 13px 21px;
-        border: 1px solid var(--gold-soft);
-        border-radius: 13px;
-        background: rgba(10, 14, 19, 0.43);
-        backdrop-filter: blur(8px);
-        font:
-          500 clamp(15px, 1.45vw, 21px)/1.6 "Noto Serif KR",
-          serif;
-        word-break: keep-all;
-        cursor: pointer;
-        opacity: 0;
-        transform: translateY(18px);
-        transition:
-          opacity 0.7s ease,
-          transform 0.7s var(--out),
-          border-color 0.3s,
-          background 0.3s;
-      }
-
-      .slide.active .pts li {
-        opacity: 1;
-        transform: none;
-      }
-
-      .pts li:nth-child(1) {
-        transition-delay: 0.45s;
-      }
-      .pts li:nth-child(2) {
-        transition-delay: 0.65s;
-      }
-      .pts li:nth-child(3) {
-        transition-delay: 0.85s;
-      }
-
-      .pts li::before {
-        content: "";
-        display: inline-block;
-        width: 7px;
-        height: 7px;
-        margin: 0 13px 2px 0;
-        border-radius: 50%;
-        background: var(--gold);
-      }
-
-      .pts li:hover,
-      .pts li.selected {
-        border-color: var(--gold);
-        background: rgba(217, 178, 111, 0.13);
-      }
-
-      .detail {
-        display: none;
-        margin: 8px 0 2px 20px;
-        font:
-          300 14px/1.8 "Noto Sans KR",
-          sans-serif;
-        color: var(--soft);
-        animation: showDetail 0.4s ease;
-      }
-
-      .pts li.selected .detail {
-        display: block;
-      }
-
-      @keyframes showDetail {
-        from {
-          opacity: 0;
-          transform: translateY(5px);
-        }
-        to {
-          opacity: 1;
-          transform: none;
-        }
-      }
-
-      .arch-wrap {
-        position: relative;
-        width: 100%;
-        max-width: 790px;
-        justify-self: center;
-        opacity: 0;
-        transform: translateY(25px);
-        transition:
-          opacity 1s 0.3s,
-          transform 1s var(--out) 0.3s;
-      }
-
-      .slide.active .arch-wrap {
-        opacity: 1;
-        transform: none;
-      }
-
-      .arch-wrap::before {
-        content: "";
-        position: absolute;
-        inset: -13px;
-        border: 1px solid var(--gold-soft);
-        border-radius: 220px 220px 24px 24px;
-        transition: inset 1s var(--out);
-      }
-
-      .slide.active .arch-wrap::before {
-        inset: -18px;
-      }
-
-      .arch {
-        height: min(76vh, 760px);
-        overflow: hidden;
-        border-radius: 210px 210px 20px 20px;
-        box-shadow: 0 35px 100px #0009;
-        background: #182028;
-      }
-
-      .arch img {
-        display: block;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        transform: scale(1.13);
-        transition: transform 9s ease;
-      }
-
-      .slide.active .arch img {
-        transform: scale(1);
-      }
-
-      .arch::after {
-        content: "";
-        position: absolute;
-        inset: 0;
-        pointer-events: none;
-        background: linear-gradient(0deg, #080b0f55, transparent 40%);
-      }
-
-      .closing .wrap {
-        grid-template-columns: 0.8fr 1.2fr;
-      }
-
-      .mapbox {
-        padding: 18px;
-        border: 1px solid var(--gold-soft);
-        background: rgba(10, 16, 22, 0.55);
-        backdrop-filter: blur(8px);
-      }
-
-      .mapbox svg {
-        display: block;
-        width: 100%;
-        height: auto;
-      }
-
-      .outline {
-        stroke-dasharray: 1800;
-        stroke-dashoffset: 1800;
-        transition: stroke-dashoffset 3s var(--ease) 0.3s;
-      }
-
-      .slide.active .outline {
-        stroke-dashoffset: 0 !important;
-      }
-
-      .route {
-        fill: none;
-        stroke: var(--clay);
-        stroke-width: 2;
-        stroke-dasharray: var(--len, 500);
-        stroke-dashoffset: var(--len, 500);
-        transition: stroke-dashoffset 3s ease 1s;
-      }
-
-      .slide.active .route {
-        stroke-dashoffset: 0;
-      }
-
-      .pin {
-        opacity: 0;
-        transition: opacity 0.6s;
-      }
-
-      .slide.active .pin {
-        opacity: 1;
-      }
-
-      .pin .c {
-        fill: var(--bg);
-        stroke: var(--gold);
-        stroke-width: 2;
-      }
-
-      .pin .p {
-        fill: none;
-        stroke: var(--gold);
-        animation: pulse 2s infinite;
-      }
-
-      .pin text {
-        fill: var(--ink);
-        font-size: 10px;
-        letter-spacing: 1px;
-        font-weight: 700;
-      }
-
-      .pin text.k {
-        fill: var(--gold);
-        font-size: 11px;
-        font-weight: 400;
-      }
-
-      @keyframes pulse {
-        from {
-          r: 5;
-          opacity: 0.8;
-        }
-        to {
-          r: 20;
-          opacity: 0;
-        }
-      }
-
-      .restart {
-        margin-top: 24px;
-        padding: 12px 23px;
-        border: 1px solid var(--gold);
-        border-radius: 40px;
-        background: transparent;
-        color: var(--gold);
-        font-size: 12px;
-        letter-spacing: 2px;
-        transition: 0.3s;
-      }
-
-      .restart:hover {
-        background: var(--gold);
-        color: #111;
-      }
-
-      .footer {
-        position: fixed;
-        z-index: 30;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        height: 72px;
-        padding: 0 4.5%;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        background: linear-gradient(0deg, #080b0f88, transparent);
-      }
-
-      .hint {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        color: var(--soft);
-        font-size: 10px;
-        letter-spacing: 2px;
-      }
-
-      .hint::before {
-        content: "";
-        width: 38px;
-        height: 1px;
-        background: var(--gold);
-      }
-
-      .ctrl {
-        display: flex;
-        gap: 9px;
-      }
-
-      .cbtn {
-        width: 42px;
-        height: 42px;
-        border: 1px solid #f3ede177;
-        border-radius: 50%;
-        background: transparent;
-        transition: 0.3s;
-      }
-
-      .cbtn:hover {
-        color: #111;
-        background: var(--gold);
-        border-color: var(--gold);
-      }
-
-      .pbar {
-        position: fixed;
-        z-index: 35;
-        bottom: 0;
-        left: 0;
-        height: 2px;
-        width: 0;
-        background: var(--gold);
-        transition: width 0.8s var(--ease);
-      }
-
-      .fx {
-        position: absolute;
-        inset: 0;
-        z-index: 2;
-        pointer-events: none;
-        overflow: hidden;
-      }
-
-      .fx i {
-        position: absolute;
-        bottom: -60px;
-        width: 6px;
-        height: 6px;
-        border-radius: 50%;
-        background: var(--gold);
-        box-shadow: 0 0 18px var(--gold);
-        animation: floatUp var(--time, 12s) linear infinite;
-        animation-delay: var(--delay, 0s);
-        opacity: 0;
-      }
-
-      @keyframes floatUp {
-        10% {
-          opacity: 0.65;
-        }
-        90% {
-          opacity: 0.4;
-        }
-        to {
-          transform: translate(var(--drift, 35px), -110vh);
-          opacity: 0;
-        }
-      }
-
-      @media (hover: hover) {
-        body {
-          cursor: none;
-        }
-        button,
-        .pts li {
-          cursor: none;
-        }
-      }
-
-      @media (hover: none) {
-        .cursor,
-        .cdot {
-          display: none;
-        }
-      }
-
       @media (max-width: 900px) {
         .header {
           height: 62px;
         }
+        .h-right {
+          gap: 12px;
+        }
+        .tag,
         .timeline,
-        .hint,
-        .tbtn .tag {
+        .hint {
           display: none;
         }
-        .h-right {
-          gap: 13px;
-        }
         .footer {
-          height: 62px;
+          height: 60px;
         }
         .cbtn {
           width: 36px;
           height: 36px;
         }
         .wrap,
-        .closing .wrap {
+        .closing .wrap,
+        .flip .wrap {
           display: flex;
           flex-direction: column;
           align-items: stretch;
           justify-content: center;
-          gap: 24px;
-          padding: 155px 7% 75px;
+          gap: 20px;
+          padding: 140px 7% 72px;
           overflow-y: auto;
         }
         .hero .wrap {
-          padding: 220px 7% 75px;
+          padding: 205px 7% 65px;
         }
         .id-top {
-          top: 78px;
+          top: 75px;
           right: 7%;
           max-width: 86%;
         }
-        .id-top .major {
-          font-size: 17px;
+        .major {
+          font-size: 16px;
         }
-        .id-top .nm {
+        .nm {
           font-size: 15px;
         }
         .title {
-          font-size: clamp(31px, 7vw, 48px);
+          font-size: clamp(30px, 7vw, 46px);
         }
         .hero .title {
-          font-size: clamp(39px, 10vw, 65px);
+          font-size: clamp(38px, 9vw, 63px);
         }
         .pts {
-          margin-top: 16px;
-          gap: 8px;
+          margin-top: 15px;
+          gap: 7px;
         }
         .pts li {
-          padding: 10px 13px;
-          font-size: 14px;
+          padding: 9px 12px;
+          font-size: 13px;
         }
         .arch-wrap {
           width: 72%;
         }
         .arch {
-          height: 30vh;
+          height: 27vh;
           border-radius: 100px 100px 15px 15px;
         }
-        .arch-wrap::before {
+        .arch-wrap:before {
           border-radius: 110px 110px 18px 18px;
         }
         .mapbox {
-          padding: 10px;
-        }
-        .restart {
-          margin-top: 14px;
+          padding: 9px;
         }
       }
-
       @media (max-height: 650px) and (min-width: 901px) {
         .wrap {
           padding-top: 70px;
-          padding-bottom: 65px;
+          padding-bottom: 60px;
         }
         .arch {
-          height: 68vh;
+          height: 65vh;
         }
         .pts {
           gap: 7px;
-          margin-top: 15px;
+          margin-top: 14px;
         }
         .pts li {
-          padding: 8px 13px;
-        }
-        .id-top {
-          top: 75px;
-        }
-        .hero .wrap {
-          padding-top: 170px;
-        }
-      }
-
-      @media (prefers-reduced-motion: reduce) {
-        *,
-        *::before,
-        *::after {
-          animation-duration: 0.01ms !important;
-          transition-duration: 0.01ms !important;
+          padding: 8px 12px;
         }
       }
     </style>
@@ -987,8 +664,6 @@
     <div class="grain"></div>
     <div class="vignette"></div>
     <canvas id="dust"></canvas>
-    <div class="cursor" id="cursor"></div>
-    <div class="cdot" id="cdot"></div>
 
     <div class="loader" id="loader">
       <b>Türkiye</b>
@@ -999,39 +674,45 @@
     <header class="header">
       <div class="brand">FIELDNOTES <span>/ TÜRKİYE</span></div>
       <div class="h-right">
-        <button class="tbtn" id="auto" aria-label="자동 재생">
-          <span class="tag">AUTO</span>
-          <span id="autoIc">▶</span>
+        <button class="tbtn" id="auto">
+          <span class="tag">AUTO</span><span id="autoIc">▶</span>
         </button>
-        <button class="tbtn" id="sound" aria-label="배경 사운드">
-          <span class="tag">SOUND</span>
-          <span class="bars"><i></i><i></i><i></i><i></i></span>
+        <button class="tbtn" id="sound">
+          <span class="tag">SOUND</span><span>♫</span>
         </button>
         <div class="counter" id="counter"><em>01</em> / 06</div>
       </div>
     </header>
 
-    <nav class="timeline" id="timeline" aria-label="슬라이드 이동"></nav>
-    <main id="stage" aria-label="튀르키예 여행 프레젠테이션"></main>
+    <nav class="timeline" id="timeline"></nav>
+    <main id="stage"></main>
 
     <footer class="footer">
       <div class="hint">SCROLL · ← → · SWIPE</div>
       <div class="ctrl">
-        <button class="cbtn mag" id="prev" aria-label="이전">←</button>
-        <button class="cbtn mag" id="next" aria-label="다음">→</button>
-        <button class="cbtn mag" id="full" aria-label="전체 화면">⛶</button>
+        <button class="cbtn" id="prev" aria-label="이전">←</button>
+        <button class="cbtn" id="next" aria-label="다음">→</button>
+        <button class="cbtn" id="full" aria-label="전체 화면">⛶</button>
       </div>
     </footer>
-
     <div class="pbar" id="pbar"></div>
 
     <script>
       const imageURLs = {
+        // 1-slayd: Istanbul
         hero: "https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?auto=format&fit=crop&w=2200&q=85",
+
+        // 2-slayd: Istanbulning tarixiy joylari
         ist: "https://images.unsplash.com/photo-1541432901042-2d8bd64b4a9b?auto=format&fit=crop&w=2200&q=85",
-        cap: "https://images.unsplash.com/photo-1570939274717-7eda259b50ed?auto=format&fit=crop&w=2200&q=85",
-        tea: "https://images.unsplash.com/photo-1544787219-7f47ccb76574?auto=format&fit=crop&w=2200&q=85",
+
+        // 3-slayd: Turkiyaning boshqa manzarasi — Istanbuldan boshqa rasm
         ant: "https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&w=2200&q=85",
+
+        // 4-slayd: haqiqiy Kapadokiya havo sharlari surati
+        cap: "https://images.unsplash.com/photo-1752228898255-edf840342a9d?auto=format&fit=crop&w=2200&q=85",
+
+        // 5-slayd: turk taomlari — baklava va kebab
+        tea: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=2200&q=85",
       };
 
       const data = [
@@ -1040,25 +721,13 @@
           name: "INTRO",
           tint: "#b9683f",
           image: imageURLs.hero,
-          alt: "튀르키예 이스탄불",
+          alt: "이스탄불의 풍경",
           eyebrow: "MY TRAVEL STORY",
           title: ["튀르키예 여행 경험"],
           points: [
-            {
-              title: "특별했던 튀르키예 여행",
-              detail:
-                "튀르키예 여행은 새로운 장소와 문화를 직접 경험할 수 있었던 특별한 시간이었습니다.",
-            },
-            {
-              title: "아름다운 풍경과 역사",
-              detail:
-                "역사적인 건축물과 아름다운 자연 풍경이 어우러져 인상 깊었습니다.",
-            },
-            {
-              title: "잊지 못할 추억",
-              detail:
-                "이번 여행에서 경험한 순간들은 오랫동안 기억에 남을 소중한 추억이 되었습니다.",
-            },
+            "특별했던 튀르키예 여행",
+            "아름다운 풍경과 역사",
+            "잊지 못할 추억",
           ],
         },
         {
@@ -1070,20 +739,9 @@
           eyebrow: "01 / WHY TURKIYE",
           title: ["여행을 가게 된 이유"],
           points: [
-            {
-              title: "튀르키예의 역사와 문화에 대한 관심",
-              detail:
-                "오래된 역사와 다양한 문화가 공존하는 튀르키예를 직접 알아보고 싶었습니다.",
-            },
-            {
-              title: "터키 드라마에 대한 관심",
-              detail:
-                "터키 드라마를 통해 접한 문화와 생활 방식에 관심이 생겼습니다.",
-            },
-            {
-              title: "새로운 문화 경험",
-              detail: "다른 나라의 일상과 전통을 직접 경험하고 싶었습니다.",
-            },
+            "튀르키예의 역사와 문화에 대한 관심",
+            "터키 드라마에 대한 관심",
+            "새로운 문화 경험",
           ],
         },
         {
@@ -1091,25 +749,13 @@
           name: "PLACES",
           tint: "#2d8fb8",
           image: imageURLs.ant,
-          alt: "튀르키예의 아름다운 풍경",
+          alt: "튀르키예의 아름다운 해안 풍경",
           eyebrow: "02 / PLACES TO VISIT",
           title: ["여행지와 주요 활동"],
           points: [
-            {
-              title: "이스탄불: 블루 모스크, 아야소피아",
-              detail:
-                "이스탄불의 대표적인 역사적 건축물을 살펴보며 도시의 역사와 문화를 알아볼 수 있습니다.",
-            },
-            {
-              title: "카파도키아: 열기구 체험",
-              detail:
-                "카파도키아의 독특한 지형 위로 열기구를 타는 경험은 여행의 특별한 순간입니다.",
-            },
-            {
-              title: "아름다운 풍경 구경",
-              detail:
-                "도시와 자연이 보여 주는 서로 다른 풍경을 감상하며 여행을 즐길 수 있습니다.",
-            },
+            "이스탄불: 블루 모스크, 아야소피아",
+            "카파도키아: 열기구 체험",
+            "아름다운 풍경 구경",
           ],
         },
         {
@@ -1121,21 +767,9 @@
           eyebrow: "03 / SPECIAL MOMENT",
           title: ["가장 인상 깊었던 순간"],
           points: [
-            {
-              title: "열기구를 탔던 순간",
-              detail:
-                "열기구 체험은 평소에 쉽게 할 수 없는 특별한 경험으로 기억에 남습니다.",
-            },
-            {
-              title: "하늘에서 본 아름다운 풍경",
-              detail:
-                "높은 곳에서 바라보는 자연의 모습은 평소와는 다른 느낌을 줍니다.",
-            },
-            {
-              title: "행복하고 특별했던 경험",
-              detail:
-                "새로운 경험을 하며 느낀 즐거움과 감동은 여행을 더욱 특별하게 만듭니다.",
-            },
+            "열기구를 탔던 순간",
+            "하늘에서 본 아름다운 풍경",
+            "행복하고 특별했던 경험",
           ],
         },
         {
@@ -1143,57 +777,29 @@
           name: "FOOD",
           tint: "#9c654b",
           image: imageURLs.tea,
-          alt: "튀르키예의 전통 차",
+          alt: "터키 차",
           eyebrow: "04 / TASTE OF TURKIYE",
           title: ["튀르키예 음식"],
-          points: [
-            {
-              title: "케밥과 바클라바",
-              detail:
-                "케밥은 다양한 재료를 활용한 대표적인 음식이며, 바클라바는 달콤한 전통 디저트입니다.",
-            },
-            {
-              title: "터키 차",
-              detail:
-                "터키 차는 일상생활과 손님을 맞이하는 문화에서 중요한 역할을 합니다.",
-            },
-            {
-              title: "새로운 음식 경험",
-              detail:
-                "현지 음식을 맛보는 것은 그 나라의 생활 방식과 문화를 이해하는 또 다른 방법입니다.",
-            },
-          ],
+          points: ["케밥과 바클라바", "터키 차", "새로운 음식 경험"],
         },
         {
           type: "closing",
           name: "LESSON",
           tint: "#2d8fb8",
           image: imageURLs.ant,
-          alt: "튀르키예의 아름다운 풍경",
+          alt: "튀르키예의 아름다운 해안",
           eyebrow: "05 / WHAT I LEARNED",
           title: ["여행을 통해 배운 점"],
           points: [
-            {
-              title: "다른 문화에 대한 이해",
-              detail:
-                "다양한 문화를 직접 알아보며 서로 다른 생활 방식과 전통을 이해할 수 있습니다.",
-            },
-            {
-              title: "소중한 추억",
-              detail:
-                "새로운 장소와 경험, 여행 중의 순간들이 오랫동안 기억에 남습니다.",
-            },
-            {
-              title: "다시 방문하고 싶은 나라",
-              detail:
-                "아름다운 풍경과 풍부한 문화 때문에 튀르키예를 다시 방문하고 싶습니다.",
-            },
+            "다른 문화에 대한 이해",
+            "소중한 추억",
+            "다시 방문하고 싶은 나라",
           ],
         },
       ];
 
-      const escapeHTML = (value) =>
-        String(value).replace(
+      function escapeHTML(value) {
+        return String(value).replace(
           /[&<>"']/g,
           (char) =>
             ({
@@ -1204,87 +810,43 @@
               "'": "&#39;",
             })[char],
         );
+      }
 
       function makeTitle(lines) {
-        let charIndex = 0;
-
+        let i = 0;
         return lines
-          .map((line, lineIndex) => {
-            const chars = [...line]
-              .map((char) => {
-                const i = charIndex++;
-                return `<span class="ch" style="--i:${i}">${escapeHTML(char)}</span>`;
-              })
-              .join("");
-
-            return `<span class="ln"><span class="w">${chars}</span></span>`;
-          })
+          .map(
+            (line) =>
+              `<span class="ln"><span>${[...line]
+                .map(
+                  (char) =>
+                    `<span class="ch" style="--i:${i++}">${escapeHTML(char)}</span>`,
+                )
+                .join("")}</span></span>`,
+          )
           .join("");
       }
 
+      /* Faqat sarlavhalar: qo‘shimcha ichki gaplar yo‘q */
       function makePoints(points) {
-        return `
-        <ul class="pts">
-          ${points
-            .map(
-              (point, index) => `
-            <li tabindex="0" role="button" aria-expanded="false" data-point="${index}">
-              <span>${escapeHTML(point.title)}</span>
-              <div class="detail">${escapeHTML(point.detail)}</div>
-            </li>
-          `,
-            )
-            .join("")}
-        </ul>
-      `;
+        return `<ul class="pts">${points
+          .map((point) => `<li>${escapeHTML(point)}</li>`)
+          .join("")}</ul>`;
       }
 
       function makeMap() {
         return `
-        <svg viewBox="0 0 600 350" role="img" aria-label="튀르키예 여행지">
-          <defs>
-            <linearGradient id="mapGold" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stop-color="#f3d9a0"/>
-              <stop offset="100%" stop-color="#c8694a"/>
-            </linearGradient>
-          </defs>
-
-          <path class="outline"
-            d="M65 100 L130 72 L185 91 L230 64 L290 83
-               L340 68 L400 91 L455 80 L510 113 L535 150
-               L500 180 L520 220 L475 250 L425 243
-               L385 280 L330 260 L285 285 L245 250
-               L190 260 L150 230 L110 215 L80 175 Z"
-            fill="rgba(217,178,111,.08)"
-            stroke="url(#mapGold)" stroke-width="2"/>
-
-          <path class="route" d="M150 125 Q220 155 290 185 T420 245"/>
-
-          <g class="pin" transform="translate(150 125)">
-            <circle class="p" r="6" fill="none" stroke="#d9b26f"/>
-            <circle class="c" r="5"/>
-            <text x="13" y="-8">ISTANBUL</text>
-            <text class="k" x="13" y="10">이스탄불</text>
-          </g>
-
-          <g class="pin" transform="translate(290 185)">
-            <circle class="p" r="6" fill="none" stroke="#d9b26f"/>
-            <circle class="c" r="5"/>
-            <text x="13" y="-8">CAPPADOCIA</text>
-            <text class="k" x="13" y="10">카파도키아</text>
-          </g>
-
-          <g class="pin" transform="translate(420 245)">
-            <circle class="p" r="6" fill="none" stroke="#d9b26f"/>
-            <circle class="c" r="5"/>
-            <text x="-13" y="-8" text-anchor="end">ANTALYA</text>
-            <text class="k" x="-13" y="10" text-anchor="end">안탈리아</text>
-          </g>
-        </svg>
-      `;
+  <svg viewBox="0 0 600 350" role="img" aria-label="튀르키예 여행지">
+    <defs><linearGradient id="mapGold"><stop stop-color="#f3d9a0"/><stop offset="1" stop-color="#c8694a"/></linearGradient></defs>
+    <path class="outline" d="M65 100 L130 72 L185 91 L230 64 L290 83 L340 68 L400 91 L455 80 L510 113 L535 150 L500 180 L520 220 L475 250 L425 243 L385 280 L330 260 L285 285 L245 250 L190 260 L150 230 L110 215 L80 175 Z" fill="#d9b26f10" stroke="url(#mapGold)" stroke-width="2"/>
+    <path class="route" d="M150 125 Q220 155 290 185 T420 245"/>
+    <g class="pin" transform="translate(150 125)"><circle class="p" r="6"/><circle class="c" r="5"/><text x="13" y="-8">ISTANBUL</text><text class="k" x="13" y="10">이스탄불</text></g>
+    <g class="pin" transform="translate(290 185)"><circle class="p" r="6"/><circle class="c" r="5"/><text x="13" y="-8">CAPPADOCIA</text><text class="k" x="13" y="10">카파도키아</text></g>
+    <g class="pin" transform="translate(420 245)"><circle class="p" r="6"/><circle class="c" r="5"/><text x="-13" y="-8" text-anchor="end">ANTALYA</text><text class="k" x="-13" y="10" text-anchor="end">안탈리아</text></g>
+  </svg>`;
       }
 
-      function makeSlide(item, index) {
+      function makeSlide(item) {
         const hero = item.type === "hero";
         const closing = item.type === "closing";
         const classes = [
@@ -1292,149 +854,88 @@
           hero ? "hero" : "",
           closing ? "closing" : "",
           !hero && !closing ? "place" : "",
-          !hero && !closing && index % 2 ? "flip" : "",
         ]
           .filter(Boolean)
           .join(" ");
-
-        const heading = `
-        <div class="eyebrow">${escapeHTML(item.eyebrow)}</div>
-        <h1 class="title">${makeTitle(item.title)}</h1>
-        ${makePoints(item.points)}
-      `;
-
+        const heading = `<div class="eyebrow">${escapeHTML(item.eyebrow)}</div><h1 class="title">${makeTitle(item.title)}</h1>${makePoints(item.points)}`;
         const identity = hero
-          ? `
-        <div class="id-top">
-          <div class="major">한국어 통번역 전공 2학년</div>
-          <div class="nm">욱타모바 자스미나입니다</div>
-        </div>
-      `
+          ? `<div class="id-top"><div class="major">한국어 통번역 전공 2학년</div><div class="nm">욱타모바 자스미나입니다</div></div>`
           : "";
-
         let content;
 
         if (hero) {
-          content = `
-          ${identity}
-          <div class="wrap">${heading}</div>
-        `;
+          content = `${identity}<div class="wrap">${heading}</div>`;
         } else if (closing) {
-          content = `
-          <div class="wrap">
-            <div>
-              ${heading}
-              <button class="restart" id="restart">↺ 처음으로</button>
-            </div>
-            <div class="mapbox">${makeMap()}</div>
-          </div>
-        `;
+          content = `<div class="wrap"><div>${heading}<button class="restart" id="restart">↺ 처음으로</button></div><div class="mapbox">${makeMap()}</div></div>`;
         } else {
-          content = `
-          <div class="wrap">
-            <div>${heading}</div>
-            <figure class="arch-wrap">
-              <div class="arch">
-                <img src="${item.image}" alt="${escapeHTML(item.alt)}">
-              </div>
-            </figure>
-          </div>
-        `;
+          content = `<div class="wrap"><div>${heading}</div><figure class="arch-wrap"><div class="arch"><img src="${item.image}" alt="${escapeHTML(item.alt)}"></div></figure></div>`;
         }
 
-        return `
-        <section class="${classes}" style="--tint:${item.tint}">
-          <div class="bg">
-            <img src="${item.image}" alt="${escapeHTML(item.alt)}">
-          </div>
-          <div class="glow"></div>
-          ${!hero ? '<div class="fx"></div>' : ""}
-          ${content}
-        </section>
-      `;
+        return `<section class="${classes}" style="--tint:${item.tint}">
+    <div class="bg"><img src="${item.image}" alt="${escapeHTML(item.alt)}"></div>
+    <div class="glow"></div>${content}
+  </section>`;
       }
 
       const stage = document.getElementById("stage");
       stage.innerHTML = data.map(makeSlide).join("");
-
       const slides = [...stage.querySelectorAll(".slide")];
       const total = slides.length;
-
-      slides.forEach((slide, index) => {
-        slide.setAttribute("role", "group");
-        slide.setAttribute("aria-roledescription", "slide");
-        slide.setAttribute("aria-label", `${index + 1} / ${total}`);
-        slide.inert = true;
-      });
+      slides.forEach((slide) => (slide.inert = true));
 
       const timeline = document.getElementById("timeline");
-
       timeline.innerHTML = data
         .map(
-          (item, index) => `
-      <button class="tl" data-i="${index}" aria-label="${item.name}">
-        <i></i>
-        <span>${String(index + 1).padStart(2, "0")} · ${item.name}</span>
-      </button>
-    `,
+          (item, i) =>
+            `<button class="tl" data-i="${i}"><i></i><span>${String(i + 1).padStart(2, "0")} · ${item.name}</span></button>`,
         )
         .join("");
-
       const timelineButtons = [...timeline.children];
-      const counter = document.getElementById("counter");
-      const progress = document.getElementById("pbar");
 
-      let current = -1;
-      let busy = false;
-      let autoOn = false;
-      let autoTimer;
+      let current = -1,
+        busy = false,
+        autoOn = false,
+        autoTimer;
 
       function goTo(index) {
         if (busy || index === current || index < 0 || index >= total) return;
-
         busy = true;
-
-        const oldSlide = slides[current];
-        const newSlide = slides[index];
+        const old = slides[current],
+          nextSlide = slides[index];
         const direction = current === -1 || index > current ? 1 : -1;
-
-        newSlide.style.setProperty(
+        nextSlide.style.setProperty(
           "--from",
           direction > 0 ? "inset(100% 0 0 0)" : "inset(0 0 100% 0)",
         );
+        nextSlide.classList.add("enter");
+        void nextSlide.offsetWidth;
 
-        newSlide.classList.add("enter");
-        void newSlide.offsetWidth;
-
-        if (oldSlide) {
-          oldSlide.classList.remove("active");
-          oldSlide.classList.add("under");
-          oldSlide.inert = true;
+        if (old) {
+          old.classList.remove("active");
+          old.classList.add("under");
+          old.inert = true;
         }
-
-        newSlide.classList.add("active");
-        newSlide.inert = false;
+        nextSlide.classList.add("active");
+        nextSlide.inert = false;
         current = index;
 
-        counter.innerHTML = `<em>${String(index + 1).padStart(2, "0")}</em> / ${String(total).padStart(2, "0")}`;
-
-        progress.style.width = ((index + 1) / total) * 100 + "%";
-
-        timelineButtons.forEach((button, i) => {
-          button.classList.toggle("active", i === index);
-        });
+        document.getElementById("counter").innerHTML =
+          `<em>${String(index + 1).padStart(2, "0")}</em> / ${String(total).padStart(2, "0")}`;
+        document.getElementById("pbar").style.width =
+          ((index + 1) / total) * 100 + "%";
+        timelineButtons.forEach((b, i) =>
+          b.classList.toggle("active", i === index),
+        );
 
         try {
           history.replaceState(null, "", "#" + (index + 1));
-        } catch (error) {}
-
+        } catch (e) {}
         clearTimeout(autoTimer);
-
         if (autoOn) autoTimer = setTimeout(next, 9500);
 
         setTimeout(() => {
-          if (oldSlide) oldSlide.classList.remove("under", "enter");
-          newSlide.classList.remove("enter");
+          if (old) old.classList.remove("under", "enter");
+          nextSlide.classList.remove("enter");
           busy = false;
         }, 1200);
       }
@@ -1442,115 +943,73 @@
       function next() {
         goTo((current + 1) % total);
       }
-
       function prev() {
         goTo((current - 1 + total) % total);
       }
 
       document.getElementById("next").addEventListener("click", next);
       document.getElementById("prev").addEventListener("click", prev);
-
-      timelineButtons.forEach((button) => {
-        button.addEventListener("click", () => goTo(Number(button.dataset.i)));
-      });
+      timelineButtons.forEach((b) =>
+        b.addEventListener("click", () => goTo(Number(b.dataset.i))),
+      );
 
       document.addEventListener("click", (event) => {
-        const point = event.target.closest(".pts li");
-
-        if (point) {
-          const list = point.closest(".pts");
-
-          list.querySelectorAll("li").forEach((item) => {
-            if (item !== point) {
-              item.classList.remove("selected");
-              item.setAttribute("aria-expanded", "false");
-            }
-          });
-
-          const selected = point.classList.toggle("selected");
-          point.setAttribute("aria-expanded", String(selected));
-        }
-
         if (event.target.closest("#restart")) goTo(0);
       });
 
       document.addEventListener("keydown", (event) => {
         if (
-          event.target.closest(".pts li") &&
-          ["Enter", " "].includes(event.key)
-        ) {
-          event.preventDefault();
-          event.target.closest(".pts li").click();
-          return;
-        }
-
-        if (
           event.target.closest("button") &&
           ["Enter", " "].includes(event.key)
         )
           return;
-
         if (["ArrowRight", "ArrowDown", "PageDown", " "].includes(event.key)) {
           event.preventDefault();
           next();
         } else if (["ArrowLeft", "ArrowUp", "PageUp"].includes(event.key)) {
           event.preventDefault();
           prev();
-        } else if (/^[1-6]$/.test(event.key)) {
-          goTo(Number(event.key) - 1);
-        } else if (event.key === "Home") {
-          goTo(0);
-        } else if (event.key === "End") {
-          goTo(total - 1);
-        } else if (event.key.toLowerCase() === "f") {
+        } else if (/^[1-6]$/.test(event.key)) goTo(Number(event.key) - 1);
+        else if (event.key === "Home") goTo(0);
+        else if (event.key === "End") goTo(total - 1);
+        else if (event.key.toLowerCase() === "f")
           document.getElementById("full").click();
-        } else if (event.key.toLowerCase() === "a") {
+        else if (event.key.toLowerCase() === "a")
           document.getElementById("auto").click();
-        } else if (event.key.toLowerCase() === "m") {
+        else if (event.key.toLowerCase() === "m")
           document.getElementById("sound").click();
-        }
       });
 
       document.getElementById("full").addEventListener("click", async () => {
         try {
-          if (document.fullscreenElement) {
-            await document.exitFullscreen();
-          } else {
-            await document.documentElement.requestFullscreen();
-          }
-        } catch (error) {}
+          if (document.fullscreenElement) await document.exitFullscreen();
+          else await document.documentElement.requestFullscreen();
+        } catch (e) {}
       });
 
       const autoButton = document.getElementById("auto");
-      const autoIcon = document.getElementById("autoIc");
-
       autoButton.addEventListener("click", () => {
         autoOn = !autoOn;
         autoButton.classList.toggle("on", autoOn);
-        autoIcon.textContent = autoOn ? "Ⅱ" : "▶";
-
+        document.getElementById("autoIc").textContent = autoOn ? "Ⅱ" : "▶";
         clearTimeout(autoTimer);
         if (autoOn) autoTimer = setTimeout(next, 9500);
       });
 
       let wheelLock = false;
-
       document.addEventListener(
         "wheel",
         (event) => {
           if (wheelLock || Math.abs(event.deltaY) < 25) return;
-
           wheelLock = true;
           event.deltaY > 0 ? next() : prev();
-
           setTimeout(() => (wheelLock = false), 1200);
         },
         { passive: true },
       );
 
-      let touchX = 0;
-      let touchY = 0;
-
+      let touchX = 0,
+        touchY = 0;
       document.addEventListener(
         "touchstart",
         (event) => {
@@ -1565,10 +1024,8 @@
         (event) => {
           const dx = event.changedTouches[0].clientX - touchX;
           const dy = event.changedTouches[0].clientY - touchY;
-
-          if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy)) {
+          if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy))
             dx < 0 ? next() : prev();
-          }
         },
         { passive: true },
       );
@@ -1578,79 +1035,28 @@
         if (n >= 1 && n <= total) goTo(n - 1);
       });
 
-      /* Kursor va parallax */
-      const cursor = document.getElementById("cursor");
-      const dot = document.getElementById("cdot");
-
-      let tx = innerWidth / 2;
-      let ty = innerHeight / 2;
-      let cx = tx;
-      let cy = ty;
-
       document.addEventListener("mousemove", (event) => {
-        tx = event.clientX;
-        ty = event.clientY;
-
-        dot.style.transform = `translate(${tx}px,${ty}px)`;
-
         stage.style.setProperty(
           "--mx",
-          ((tx / innerWidth - 0.5) * 2).toFixed(3),
+          ((event.clientX / innerWidth - 0.5) * 2).toFixed(3),
         );
         stage.style.setProperty(
           "--my",
-          ((ty / innerHeight - 0.5) * 2).toFixed(3),
+          ((event.clientY / innerHeight - 0.5) * 2).toFixed(3),
         );
       });
 
-      document.addEventListener("mouseover", (event) => {
-        cursor.classList.toggle(
-          "big",
-          Boolean(event.target.closest("button,.pts li")),
-        );
-      });
-
-      document.addEventListener("mousedown", () => cursor.classList.add("big"));
-      document.addEventListener("mouseup", () =>
-        cursor.classList.remove("big"),
-      );
-
-      function animateCursor() {
-        cx += (tx - cx) * 0.16;
-        cy += (ty - cy) * 0.16;
-        cursor.style.transform = `translate(${cx}px,${cy}px)`;
-        requestAnimationFrame(animateCursor);
-      }
-
-      animateCursor();
-
-      document.querySelectorAll(".mag").forEach((button) => {
-        button.addEventListener("mousemove", (event) => {
-          const rect = button.getBoundingClientRect();
-          const x = (event.clientX - rect.left - rect.width / 2) * 0.25;
-          const y = (event.clientY - rect.top - rect.height / 2) * 0.25;
-          button.style.transform = `translate(${x}px,${y}px)`;
-        });
-
-        button.addEventListener("mouseleave", () => {
-          button.style.transform = "";
-        });
-      });
-
-      /* Oltin zarralar */
       const canvas = document.getElementById("dust");
       const ctx = canvas.getContext("2d");
       let W, H;
-
       function resizeCanvas() {
         W = canvas.width = innerWidth;
         H = canvas.height = innerHeight;
       }
-
       resizeCanvas();
       addEventListener("resize", resizeCanvas);
 
-      const particles = Array.from({ length: 70 }, () => ({
+      const particles = Array.from({ length: 65 }, () => ({
         x: Math.random() * innerWidth,
         y: Math.random() * innerHeight,
         r: Math.random() * 1.5 + 0.4,
@@ -1661,93 +1067,73 @@
 
       function drawParticles() {
         ctx.clearRect(0, 0, W, H);
-
         particles.forEach((p) => {
           p.x += p.vx;
           p.y += p.vy;
           p.a += 0.02;
-
           if (p.y < -5) {
             p.y = H + 5;
             p.x = Math.random() * W;
           }
-
           if (p.x < -5) p.x = W + 5;
           if (p.x > W + 5) p.x = -5;
-
           ctx.globalAlpha = 0.25 + Math.sin(p.a) * 0.2;
           ctx.fillStyle = "#d9b26f";
           ctx.beginPath();
           ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
           ctx.fill();
         });
-
         ctx.globalAlpha = 1;
         requestAnimationFrame(drawParticles);
       }
-
       drawParticles();
 
-      /* Fon ovozi */
-      let audioContext;
-      let masterGain;
-      let soundOn = false;
-
-      const soundButton = document.getElementById("sound");
-
-      soundButton.addEventListener("click", () => {
+      let audioContext,
+        masterGain,
+        soundOn = false;
+      document.getElementById("sound").addEventListener("click", () => {
         if (!audioContext) {
-          const AudioContextClass =
-            window.AudioContext || window.webkitAudioContext;
-          if (!AudioContextClass) return;
-
-          audioContext = new AudioContextClass();
+          const AudioClass = window.AudioContext || window.webkitAudioContext;
+          if (!AudioClass) return;
+          audioContext = new AudioClass();
           masterGain = audioContext.createGain();
           masterGain.gain.value = 0;
-
           const filter = audioContext.createBiquadFilter();
           filter.type = "lowpass";
           filter.frequency.value = 650;
-
           masterGain.connect(filter);
           filter.connect(audioContext.destination);
-
           [110, 164.81, 220, 277.18, 329.63, 440].forEach((frequency, i) => {
             const oscillator = audioContext.createOscillator();
             oscillator.type = i % 2 ? "sine" : "triangle";
             oscillator.frequency.value = frequency;
-
             const gain = audioContext.createGain();
             gain.gain.value = 0.1 / (i + 1) + 0.015;
-
             oscillator.connect(gain);
             gain.connect(masterGain);
             oscillator.start();
           });
         }
-
         soundOn = !soundOn;
         audioContext.resume();
-
         masterGain.gain.cancelScheduledValues(audioContext.currentTime);
         masterGain.gain.linearRampToValueAtTime(
           soundOn ? 0.12 : 0,
           audioContext.currentTime + 1,
         );
-
-        soundButton.classList.toggle("on", soundOn);
+        document.getElementById("sound").classList.toggle("on", soundOn);
       });
 
-      /* Yuklash va boshlash */
       const loader = document.getElementById("loader");
       const loadBar = document.getElementById("lbar");
       const loadPercent = document.getElementById("lpct");
-
-      const imgs = [...document.querySelectorAll("#stage img")];
-      const uniqueURLs = [...new Set(imgs.map((img) => img.src))];
-
-      let loaded = 0;
-      let started = false;
+      const uniqueURLs = [
+        ...new Set(
+          [...document.querySelectorAll("#stage img")].map((img) => img.src),
+        ),
+      ];
+      let loaded = 0,
+        started = false;
 
       function updateLoader() {
         loaded++;
@@ -1759,14 +1145,11 @@
       function begin() {
         if (started) return;
         started = true;
-
         loadBar.style.transform = "scaleX(1)";
         loadPercent.textContent = "100%";
         loader.classList.add("hide");
-
         const n = parseInt(location.hash.slice(1), 10);
         const startIndex = n >= 1 && n <= total ? n - 1 : 0;
-
         setTimeout(() => goTo(startIndex), 400);
       }
 
@@ -1775,12 +1158,10 @@
           (url) =>
             new Promise((resolve) => {
               const img = new Image();
-
               img.onload = img.onerror = () => {
                 updateLoader();
                 resolve();
               };
-
               img.src = url;
             }),
         ),
